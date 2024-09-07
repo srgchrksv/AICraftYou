@@ -19,7 +19,7 @@ export default function HomeScreen() {
   const [billing, setBilling] = useState(false);
   const apiKey = process.env.EXPO_PUBLIC_API_KEY;
 
-  const beginCraftingText = 'Begin crafting?';
+  const beginCraftingText = 'Start';
   const startOverText = 'Click here to start over';
 
   const handleOrder = async () => {
@@ -47,7 +47,7 @@ export default function HomeScreen() {
         <ThemedText type='subtitle' style={{ textAlign: 'center' }}> 🧸 🎂 🎁 🦖 ✨ 🚀 🦄 🍬 🎡 </ThemedText>
       </ThemedView>
 
-      <ThemedView style={styles.stepContainer}>
+      <ThemedView style={styles.stepContainer } >
         <Pressable
           onPress={() => {
             if (craft === beginCraftingText) {
@@ -67,7 +67,7 @@ export default function HomeScreen() {
             (pressed || craft === startOverText) && styles.craftSelected,
           ]}
         >
-          <ThemedText type="default">{craft}</ThemedText>
+          <ThemedText type="default" style={{  fontSize: craft != startOverText ? 23 :15 }}>{craft}</ThemedText>
         </Pressable>
       </ThemedView>
 
@@ -226,6 +226,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     backgroundColor: 'lime',
     borderColor: 'black',
+    borderRadius: 100,
     width: 300,
     height: 200,
     textAlign: 'center',
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   craftSelected: {
-    borderColor: 'lime',
+    borderColor: 'red',
     borderStyle: 'dashed',
     backgroundColor: 'white',
     borderWidth: 3,
