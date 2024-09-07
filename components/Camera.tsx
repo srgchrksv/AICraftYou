@@ -7,7 +7,7 @@ const { width: screenWidth } = Dimensions.get('window');
 
 interface CameraProps {
     image: string | null;
-    setImage: React.Dispatch<React.SetStateAction<string | null>>;
+    setImage: React.Dispatch<React.SetStateAction<string>>;
 }
 
   const Camera: React.FC<CameraProps> = ({ image, setImage }) => {

@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, Pressable, Button, Dimensions } from 'react-native';
+import { Image, StyleSheet, Pressable, Button, Dimensions } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -12,8 +12,8 @@ const { width: screenWidth } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const [selected, setSelected] = useState('');
-  const [image, setImage] = useState<string | null>(null);
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string>('');
+  const [generatedImage, setGeneratedImage] = useState<string>('');
   const [message, setMessage] = useState('');
   const [craft, setCraft] = useState('Begin crafting?');
   const [billing, setBilling] = useState(false);
@@ -24,13 +24,16 @@ export default function HomeScreen() {
 
   const handleOrder = async () => {
     setMessage(`Congratulations, your awesome crafted ${selected} is on the way 😁`);
+    setBilling(!billing);
+    setImage('');
+    setSelected('');
   }
 
   useEffect(() => {
-    if (generatedImage){
+    if (generatedImage) {
       setBilling(true)
     }
-  },[generatedImage])
+  }, [generatedImage])
 
   return (
     <ParallaxScrollView headerBackgroundColor={{
@@ -49,6 +52,7 @@ export default function HomeScreen() {
           onPress={() => {
             if (craft === beginCraftingText) {
               setCraft(startOverText)
+              setMessage('')
             } else {
               setCraft(beginCraftingText)
               setImage('')
@@ -67,13 +71,30 @@ export default function HomeScreen() {
         </Pressable>
       </ThemedView>
 
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText >Use it to superpower your creatives</ThemedText>
+      <ThemedView style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+      }}>
+        <Image
+          source={require('@/assets/sketch.jpeg')}
+          style={{ transform: [{ rotate: '345deg' }], width: screenWidth * 0.4, height: screenWidth * 0.4 }}
+        />
+        <Image
+          source={require('@/assets/toy.png')}
+          style={{ transform: [{ rotate: '15deg' }], width: screenWidth * 0.4, height: screenWidth * 0.4 }}
+        />
       </ThemedView>
 
-      {craft != beginCraftingText && (
+      {!message && (<ThemedView style={styles.stepContainer}>
+        <ThemedText type='defaultSemiBold'>Use it to superpower your creatives</ThemedText>
+        <ThemedText>Bring your sketch to life</ThemedText>
+      </ThemedView>)}
+
+      {(craft != beginCraftingText && !message) && (
         <ThemedView style={styles.stepContainer}>
-          <ThemedText type='defaultSemiBold'>Now follow the steps:</ThemedText>
+          <ThemedText type='defaultSemiBold'>Follow the steps:</ThemedText>
           <ThemedView style={styles.stepContainer}>
             <ThemedText type='defaultSemiBold' >Step 1:</ThemedText>
             <ThemedText type='subtitle' style={styles.stepText}>What to craft?</ThemedText>
@@ -85,7 +106,7 @@ export default function HomeScreen() {
                   setSelected('TOY')
                 } else {
                   setSelected('')
-                  setImage(null)
+                  setImage('')
                 }
               }
               }
@@ -102,7 +123,7 @@ export default function HomeScreen() {
                   setSelected('CAKE')
                 } else {
                   setSelected('')
-                  setImage(null)
+                  setImage('')
                 }
               }
               }
@@ -148,15 +169,19 @@ export default function HomeScreen() {
             <ThemedText><ThemedText type='defaultSemiBold'>Payment:</ThemedText> Card *********0000</ThemedText>
             <ThemedText><ThemedText type='defaultSemiBold'>Delivery adress:</ThemedText> Crafting St 1, Magicville</ThemedText>
           </ThemedView>
-
           <Button color="black" title="Craft" onPress={handleOrder} />
         </ThemedView>
       )}
       {message && (
         <ThemedView style={styles.stepContainer}>
+          <Image
+            source={require('@/assets/toy.png')}
+            style={{ width: screenWidth * 0.9, height: screenWidth * 0.9 }}
+          />
           <ThemedText style={{ textAlign: 'center', color: 'lime', textShadowColor: 'yellow', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 }}>{message}</ThemedText>
           <Confetti />
-        </ThemedView>)}
+        </ThemedView>)
+      }
     </ParallaxScrollView>
   );
 }

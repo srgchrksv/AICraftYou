@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { View, Button, Image, Alert, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
+import { Button, Image, Alert, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
 import { ThemedView } from './ThemedView';
 import { ThemedText } from './ThemedText';
 const { width: screenWidth } = Dimensions.get('window');
 interface StabilityProps {
     apiKey: string;
-    image: string | null;
+    image: string;
     typeToGenerate: string;
-    generatedImage: string | null;
-    setGeneratedImage: React.Dispatch<React.SetStateAction<string | null>>;
+    generatedImage: string;
+    setGeneratedImage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Stability: React.FC<StabilityProps> = ({ apiKey, image, typeToGenerate, generatedImage, setGeneratedImage }) => {
@@ -17,7 +17,6 @@ const Stability: React.FC<StabilityProps> = ({ apiKey, image, typeToGenerate, ge
     const fetchImage = async () => {
         try {
             setLoading(true);
-            setGeneratedImage(null);
             const formData = new FormData();
             formData.append('prompt', typeToGenerate === 'CAKE'
                 ? 'fun CAKE from a bakery. studio photo, white background.'
