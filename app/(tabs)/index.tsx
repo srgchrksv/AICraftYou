@@ -164,7 +164,7 @@ export default function HomeScreen() {
         <ThemedView style={styles.stepContainer}>
           <ThemedText type='defaultSemiBold'>Step 4:</ThemedText>
           <ThemedText type='subtitle' style={styles.stepText}>Lets {selected === 'CAKE' ? 'bake' : 'make'} your {selected} to life?</ThemedText>
-          <ThemedView style={{}}>
+          <ThemedView style={{ backgroundColor: 'green'}}>
             <ThemedText style={{ borderStyle: 'dashed', borderBottomColor: 'black', borderBottomWidth: 1 }}><ThemedText type='defaultSemiBold'>Total:</ThemedText> 50</ThemedText>
             <ThemedText><ThemedText type='defaultSemiBold'>Payment:</ThemedText> Card *********0000</ThemedText>
             <ThemedText><ThemedText type='defaultSemiBold'>Delivery adress:</ThemedText> Crafting St 1, Magicville</ThemedText>
