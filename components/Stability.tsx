@@ -7,12 +7,12 @@ interface StabilityProps {
     apiKey: string;
     image: string | null;
     typeToGenerate: string;
+    generatedImage: string | null;
     setGeneratedImage: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const Stability: React.FC<StabilityProps> = ({ apiKey, image, typeToGenerate, setGeneratedImage }) => {
+const Stability: React.FC<StabilityProps> = ({ apiKey, image, typeToGenerate, generatedImage, setGeneratedImage }) => {
     const [loading, setLoading] = useState(false);
-    const generatedImage = '';
 
     const fetchImage = async () => {
         try {
@@ -25,6 +25,7 @@ const Stability: React.FC<StabilityProps> = ({ apiKey, image, typeToGenerate, se
             formData.append('control_strength', '0.6');
             formData.append('output_format', 'webp');
 
+            console.log('image:', image);
             if (image) {
                 // For React Native, we need to append the image differently
                 formData.append('image', {
@@ -44,6 +45,7 @@ const Stability: React.FC<StabilityProps> = ({ apiKey, image, typeToGenerate, se
                 body: formData,
             });
 
+            console.log('response:', response);
             if (response.ok) {
                 const blob = await response.blob();
                 const base64 = await new Promise((resolve) => {
@@ -71,7 +73,8 @@ const Stability: React.FC<StabilityProps> = ({ apiKey, image, typeToGenerate, se
             <Button     color="black" title="Do magic" onPress={fetchImage} />
             {loading && (
                 <ThemedView>
-                    <ThemedText>Your awesome {typeToGenerate} sketch gets some magic..</ThemedText>
+                    <ThemedText>Your awesome {typeToGenerate} sketch gets some magic..
+                    </ThemedText>
                 <ActivityIndicator size="large" color="#0000ff" />
                 </ThemedView>
                 )}

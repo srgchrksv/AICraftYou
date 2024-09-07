@@ -1,6 +1,5 @@
 import { Image, StyleSheet, Platform, Pressable, Button, Dimensions } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -16,18 +15,27 @@ export default function HomeScreen() {
   const [image, setImage] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [message, setMessage] = useState('');
-  const [craft, setCraft] = useState(false);
+  const [craft, setCraft] = useState('Begin crafting?');
+  const [billing, setBilling] = useState(false);
   const apiKey = process.env.EXPO_PUBLIC_API_KEY;
 
+  const beginCraftingText = 'Begin crafting?';
+  const startOverText = 'Click here to start over';
 
   const handleOrder = async () => {
-    setMessage(`Congratulations, you awesome crafted ${selected} is on the way 😁`);
+    setMessage(`Congratulations, your awesome crafted ${selected} is on the way 😁`);
   }
+
+  useEffect(() => {
+    if (generatedImage){
+      setBilling(true)
+    }
+  },[generatedImage])
 
   return (
     <ParallaxScrollView headerBackgroundColor={{
       dark: '',
-      light: ''
+      light: '',
     }}>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="title" style={{ textAlign: 'center', borderBottomColor: 'black', borderBottomWidth: 1, borderStyle: 'dashed', width: screenWidth }}>AICraftYou</ThemedText>
@@ -35,33 +43,37 @@ export default function HomeScreen() {
       <ThemedView style={styles.stepContainer}>
         <ThemedText type='subtitle' style={{ textAlign: 'center' }}> 🧸 🎂 🎁 🦖 ✨ 🚀 🦄 🍬 🎡 </ThemedText>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText >Use it to superpower your creatives</ThemedText>
-      </ThemedView>
+
       <ThemedView style={styles.stepContainer}>
         <Pressable
           onPress={() => {
-            if (!craft) {
-              setCraft(true)
+            if (craft === beginCraftingText) {
+              setCraft(startOverText)
             } else {
-              setCraft(false)
+              setCraft(beginCraftingText)
               setImage('')
               setSelected('')
               setMessage('')
+              setBilling(false)
             }
           }
           }
           style={({ pressed }) => [
             styles.beginCrafting,
-            (pressed || craft) && styles.craftSelected,
+            (pressed || craft === startOverText) && styles.craftSelected,
           ]}
         >
-          <ThemedText type="default">Begin Crafting?</ThemedText>
+          <ThemedText type="default">{craft}</ThemedText>
         </Pressable>
       </ThemedView>
 
-      {craft && (
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText >Use it to superpower your creatives</ThemedText>
+      </ThemedView>
+
+      {craft != beginCraftingText && (
         <ThemedView style={styles.stepContainer}>
+          <ThemedText type='defaultSemiBold'>Now follow the steps:</ThemedText>
           <ThemedView style={styles.stepContainer}>
             <ThemedText type='defaultSemiBold' >Step 1:</ThemedText>
             <ThemedText type='subtitle' style={styles.stepText}>What to craft?</ThemedText>
@@ -122,11 +134,12 @@ export default function HomeScreen() {
             apiKey={apiKey as string}
             image={image}
             typeToGenerate={selected}
+            generatedImage={generatedImage}
             setGeneratedImage={setGeneratedImage}
           />
         </ThemedView>}
 
-      {generatedImage && (
+      {billing && (
         <ThemedView style={styles.stepContainer}>
           <ThemedText type='defaultSemiBold'>Step 4:</ThemedText>
           <ThemedText type='subtitle' style={styles.stepText}>Lets {selected === 'CAKE' ? 'bake' : 'make'} your {selected} to life?</ThemedText>
@@ -188,8 +201,8 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     backgroundColor: 'lime',
     borderColor: 'black',
-    width: 200,
-    height: 50,
+    width: 300,
+    height: 200,
     textAlign: 'center',
     justifyContent: 'center',
     alignItems: 'center',
@@ -201,6 +214,9 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     backgroundColor: 'white',
     borderWidth: 3,
+    width: 200,
+    height: 50,
+    marginTop: 0,
   },
   stepText: {
     width: screenWidth,
