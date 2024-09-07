@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, Pressable, Button } from 'react-native';
+import { Image, StyleSheet, Platform, Pressable, Button, Dimensions } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -8,7 +8,7 @@ import Camera from '@/components/Camera';
 import Stability from '@/components/Stability';
 import Confetti from '@/components/Confetti';
 
-
+const { width: screenWidth } = Dimensions.get('window');
 
 
 export default function HomeScreen() {
@@ -16,11 +16,12 @@ export default function HomeScreen() {
   const [image, setImage] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [message, setMessage] = useState('');
+  const [craft, setCraft] = useState(false);
   const apiKey = process.env.EXPO_PUBLIC_API_KEY;
 
 
   const handleOrder = async () => {
-    setMessage(`Soon you will receive your ${selected.toUpperCase()} 😁`);
+    setMessage(`Congratulations, you awesome crafted ${selected} is on the way 😁`);
   }
 
   return (
@@ -29,59 +30,84 @@ export default function HomeScreen() {
       light: ''
     }}>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="title">AICraftYou</ThemedText>
+        <ThemedText type="title" style={{ textAlign: 'center', borderBottomColor: 'black', borderBottomWidth: 1, borderStyle: 'dashed', width: screenWidth }}>AICraftYou</ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText  type='subtitle' style={{ textAlign: 'center' }}> 🧸 🎂 🎁 🦖 ✨ 🚀 🦄 🍬 🎡 </ThemedText>
+        <ThemedText type='subtitle' style={{ textAlign: 'center' }}> 🧸 🎂 🎁 🦖 ✨ 🚀 🦄 🍬 🎡 </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText >Use it with your creative superpowers</ThemedText>
+        <ThemedText >Use it to superpower your creatives</ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type='defaultSemiBold' >Step 1:</ThemedText>
-        <ThemedText type='subtitle'>What you want to create?</ThemedText>
+        <Pressable
+          onPress={() => {
+            if (!craft) {
+              setCraft(true)
+            } else {
+              setCraft(false)
+              setImage('')
+              setSelected('')
+              setMessage('')
+            }
+          }
+          }
+          style={({ pressed }) => [
+            styles.beginCrafting,
+            (pressed || craft) && styles.craftSelected,
+          ]}
+        >
+          <ThemedText type="default">Begin Crafting?</ThemedText>
+        </Pressable>
       </ThemedView>
 
-      <ThemedView style={styles.container}>
-        <Pressable
-          onPress={() => {
-            if (selected != 'Toy') {
-              setSelected('Toy')
-            } else {
-              setSelected('')
-              setImage(null)
-            }
-          }
-          }
-          style={({ pressed }) => [
-            styles.choice,
-            (pressed || selected === 'Toy') && styles.choiceSelected,
-          ]}
-        >
-          <ThemedText type="default">Toy</ThemedText>
-        </Pressable>
-        <Pressable
-          onPress={() => {
-            if (selected != 'Cake') {
-              setSelected('Cake')
-            } else {
-              setSelected('')
-              setImage(null)
-            }
-          }
-          }
-          style={({ pressed }) => [
-            styles.choice,
-            (pressed || selected === 'Cake') && styles.choiceSelected,
-          ]}
-        >
-          <ThemedText type="default">Cake</ThemedText>
-        </Pressable>
-      </ThemedView>
+      {craft && (
+        <ThemedView style={styles.stepContainer}>
+          <ThemedView style={styles.stepContainer}>
+            <ThemedText type='defaultSemiBold' >Step 1:</ThemedText>
+            <ThemedText type='subtitle' style={styles.stepText}>What to craft?</ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.container}>
+            <Pressable
+              onPress={() => {
+                if (selected != 'TOY') {
+                  setSelected('TOY')
+                } else {
+                  setSelected('')
+                  setImage(null)
+                }
+              }
+              }
+              style={({ pressed }) => [
+                styles.choice,
+                (pressed || selected === 'TOY') && styles.choiceSelected,
+              ]}
+            >
+              <ThemedText type="default">TOY</ThemedText>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                if (selected != 'CAKE') {
+                  setSelected('CAKE')
+                } else {
+                  setSelected('')
+                  setImage(null)
+                }
+              }
+              }
+              style={({ pressed }) => [
+                styles.choice,
+                (pressed || selected === 'CAKE') && styles.choiceSelected,
+              ]}
+            >
+              <ThemedText type="default">CAKE</ThemedText>
+            </Pressable>
+          </ThemedView>
+        </ThemedView>)}
+
       {selected && (
         <ThemedView style={styles.stepContainer}>
           <ThemedText type='defaultSemiBold'>Step 2: </ThemedText>
-            <ThemedText type='subtitle' style={{ textAlign: 'center' }}>Create your dream sketch and then take a picture or upload it:</ThemedText>
+          <ThemedText type='subtitle' style={styles.stepText}>Create your dream {selected} sketch and then take a picture or upload it:</ThemedText>
           <Camera
             setImage={setImage}
             image={image}
@@ -91,7 +117,7 @@ export default function HomeScreen() {
       {image &&
         <ThemedView style={styles.stepContainer}>
           <ThemedText type='defaultSemiBold'>Step 3:</ThemedText>
-          <ThemedText  type='subtitle' style={{ textAlign: 'center' }}>Now we need to do some {selected.toUpperCase()} magic</ThemedText>
+          <ThemedText type='subtitle' style={styles.stepText}>Now we need to do some {selected} magic</ThemedText>
           <Stability
             apiKey={apiKey as string}
             image={image}
@@ -103,13 +129,19 @@ export default function HomeScreen() {
       {generatedImage && (
         <ThemedView style={styles.stepContainer}>
           <ThemedText type='defaultSemiBold'>Step 4:</ThemedText>
-          <ThemedText  type='subtitle' style={{ textAlign: 'center' }}>Lets {selected === 'Cake' ? 'bake' : 'make'} your {selected.toUpperCase()} to life?</ThemedText>
-          <Button color="black" title="Make it real" onPress={handleOrder} />
+          <ThemedText type='subtitle' style={styles.stepText}>Lets {selected === 'CAKE' ? 'bake' : 'make'} your {selected} to life?</ThemedText>
+          <ThemedView style={{}}>
+            <ThemedText style={{ borderStyle: 'dashed', borderBottomColor: 'black', borderBottomWidth: 1 }}><ThemedText type='defaultSemiBold'>Total:</ThemedText> 50</ThemedText>
+            <ThemedText><ThemedText type='defaultSemiBold'>Payment:</ThemedText> Card *********0000</ThemedText>
+            <ThemedText><ThemedText type='defaultSemiBold'>Delivery adress:</ThemedText> Crafting St 1, Magicville</ThemedText>
+          </ThemedView>
+
+          <Button color="black" title="Craft" onPress={handleOrder} />
         </ThemedView>
       )}
       {message && (
         <ThemedView style={styles.stepContainer}>
-          <ThemedText >{message}</ThemedText>
+          <ThemedText style={{ textAlign: 'center', color: 'lime', textShadowColor: 'yellow', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 4 }}>{message}</ThemedText>
           <Confetti />
         </ThemedView>)}
     </ParallaxScrollView>
@@ -151,12 +183,32 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     borderWidth: 3,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  beginCrafting: {
+    fontWeight: 'bold',
+    borderWidth: 3,
+    backgroundColor: 'lime',
+    borderColor: 'black',
+    width: 200,
+    height: 50,
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex',
+    flex: 1,
   },
+  craftSelected: {
+    borderColor: 'lime',
+    borderStyle: 'dashed',
+    backgroundColor: 'white',
+    borderWidth: 3,
+  },
+  stepText: {
+    width: screenWidth,
+    textAlign: 'center',
+    borderTopWidth: 1,
+    borderTopColor: 'black',
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+  }
 
 });

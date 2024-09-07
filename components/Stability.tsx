@@ -19,9 +19,9 @@ const Stability: React.FC<StabilityProps> = ({ apiKey, image, typeToGenerate, se
             setLoading(true);
             setGeneratedImage(null);
             const formData = new FormData();
-            formData.append('prompt', typeToGenerate === 'Cake'
-                ? 'fun cake from a bakery. studio photo, white background.'
-                : 'fun stuffed toy. studio photo, white background.');
+            formData.append('prompt', typeToGenerate === 'CAKE'
+                ? 'fun CAKE from a bakery. studio photo, white background.'
+                : 'fun stuffed TOY. studio photo, white background.');
             formData.append('control_strength', '0.6');
             formData.append('output_format', 'webp');
 
@@ -71,7 +71,7 @@ const Stability: React.FC<StabilityProps> = ({ apiKey, image, typeToGenerate, se
             <Button     color="black" title="Do magic" onPress={fetchImage} />
             {loading && (
                 <ThemedView>
-                    <ThemedText>Your awesome {typeToGenerate.toUpperCase()} sketch gets some magic..</ThemedText>
+                    <ThemedText>Your awesome {typeToGenerate} sketch gets some magic..</ThemedText>
                 <ActivityIndicator size="large" color="#0000ff" />
                 </ThemedView>
                 )}

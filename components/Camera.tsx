@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Button, Image, Platform, Alert, Dimensions } from 'react-native';
 import { ThemedText } from './ThemedText';
 import * as ImagePicker from 'expo-image-picker';
+
 const { width: screenWidth } = Dimensions.get('window');
+
 interface CameraProps {
     image: string | null;
     setImage: React.Dispatch<React.SetStateAction<string | null>>;
